@@ -1,9 +1,6 @@
 import sqlite3
 import numpy as np
-
-'''
-page_rank(ith iteration) = sum( pr_i-1th iteration of all nodes pointing to  )
-'''
+import sys
 
 connection = sqlite3.connect("spider_database.sqlite")
 cur = connection.cursor()
@@ -18,37 +15,79 @@ outbound_links = {}
 # store all the links that point to a current link
 inbound_links = {}
 
-maxx = 0
 
 for row in rows:
     # if the page links to itself, then don't consider that
     if row[0] == row[1]:
         continue
 
-    # lst.append(row)
     if row[0] not in outbound_links:
         outbound_links[row[0]] = []
 
+    if row[1] not in inbound_links:
+        inbound_links[row[1]] = []
+
     outbound_links[row[0]].append(row[1])
+    inbound_links[row[1]].append(row[0])
 
-    max_of_rows = max(row[0], row[1])
 
-    if max_of_rows > maxx:
-        maxx = max_of_rows
+# get previous ranks and store them in a list
+# 'new_ranks' are the prev_ranks as after this iteration, they'll be 
+# moved to the 'old_ranks' column
+prev_ranks = {}
 
-adjacency_mat = np.zeros((maxx, maxx))
+for page_id in outbound_links:
+    cur.execute("SELECT new_rank FROM Pages WHERE id = ?", (page_id,))
+    row = cur.fetchone()
+    prev_ranks[page_id] = row[0] 
 
-for _id in outbound_links:
-    page_id = outbound_links.get(_id)
-    for i in range(len(page_id)):
 
-        from_page = _id
-        to_page = page_id[i]
 
-        adjacency_mat[to_page - 1][from_page - 1] = 1
+for key, value in outbound_links.items():
+    print(f'({key} -> {value})')
 
-print(outbound_links, maxx, "\n" ,adjacency_mat)
+print('\nINBOUND STARTS')
+for key, value in inbound_links.items():
+    print(f'({key} -> {value})')
 
+print('\nPREV_RANKS DICTIONARY')
+
+for key, value in prev_ranks.items():
+    print(f'({key} -> {value})')
+
+
+'''
+page_rank(current_node) 
+    = sum( ( prev_rank of the node_i pointing to current_node / no of outbound links from node_i ) )
+
+take the above sum for all nodes pointing to current node
+'''
+next_ranks = {}
+
+iteration_times = int(input("Enter the iteration amount: "))
+
+if iteration_times < 1:
+    print("Must iterate atleast once!")
+    sys.exit()
+    
+for _ in range(iteration_times):
+    for page_id, links_to in outbound_links.items():
+        # only calculating page_rank for outbound liks 
+        # as those are the only ones 100% guarenteed to have been retrieved
+        next_rank = 0
+
+        if page_id in inbound_links:
+            for node_pointing_to_current_node in inbound_links[page_id]:
+                next_rank += ( prev_ranks[node_pointing_to_current_node] / len(links_to) )
+
+        next_ranks[page_id] = next_rank
+
+
+
+print('\nNEXT_RANKS DICTIONARY')
+
+for key, value in next_ranks.items():
+    print(f'({key} -> {value})')
 
 
 
