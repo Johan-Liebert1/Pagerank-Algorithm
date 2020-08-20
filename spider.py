@@ -129,6 +129,12 @@ def spider_website(website_domain):
                 cur.execute("SELECT id FROM Pages WHERE url = ?", (href,))
                 toId = cur.fetchone()[0]
 
+                '''
+                fromId is the id of the page that is linking to another pages which has 
+                id equal to 'toId'. 
+                one page links to another, thus fromId --> toId
+                '''
+
                 cur.execute("""
                     INSERT OR IGNORE INTO Links (from_page_id, to_page_id) 
                     VALUES (?, ?)
