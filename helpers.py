@@ -1,5 +1,7 @@
 def extract_domain(site):
-    site = site[site.find('w'):]
-    slash = site.find('/')
-    new_site = site[:slash]
+    if site.endswith('/'):
+        site = site[:-1]
+
+    new_site = site[:site.rfind('/')]
+
     return new_site

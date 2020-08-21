@@ -67,7 +67,7 @@ next_ranks = {}
 iteration_times = int(input("Enter the iteration amount: "))
 
 if iteration_times < 1:
-    print("Must iterate atleast once!")
+    print("\nMust iterate atleast once!\n")
     sys.exit()
     
 for _ in range(iteration_times):
@@ -79,8 +79,10 @@ for _ in range(iteration_times):
         if page_id in inbound_links:
             for node_pointing_to_current_node in inbound_links[page_id]:
                 next_rank += ( prev_ranks[node_pointing_to_current_node] / len(links_to) )
-
+    
         next_ranks[page_id] = next_rank
+
+    prev_ranks = next_ranks
 
 
 
@@ -88,6 +90,22 @@ print('\nNEXT_RANKS DICTIONARY')
 
 for key, value in next_ranks.items():
     print(f'({key} -> {value})')
+
+
+# update ranks in the database
+
+for page_id, prev_rank in prev_ranks.items():
+    cur.execute("UPDATE Pages SET old_rank = ? WHERE id = ?", (prev_rank, page_id))
+
+for page_id, new_rank in next_ranks.items():
+    cur.execute("UPDATE Pages SET new_rank = ? WHERE id = ?", (new_rank, page_id))
+
+
+connection.commit()
+cur.close()
+
+
+
 
 
 

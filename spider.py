@@ -2,7 +2,7 @@ import sqlite3
 import ssl
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urljoin
 from termcolor import colored
 
 from helpers import extract_domain
@@ -21,7 +21,7 @@ cur = connection.cursor()
 # checking if we're already in progress
 # check if everything has been found 
 
-def spider_website(website_domain):
+def spider_website(all_allowed_websites):
 
     no_of_pages = 0
 
@@ -48,14 +48,14 @@ def spider_website(website_domain):
             fromId = row[0]
             website_url = row[1]
 
-            print(colored(f'< fromId > {fromId}', 'green'), website_url)
+            print(colored(f'< fromId > {fromId}', 'green'), website_url, end = " ")
 
         except:
             print("No unretrieved html pages found")
             break
 
         try:
-            document = urlopen(website_url)
+            document = urlopen(website_url, context=ctx)
             
             website_html = document.read()
 
@@ -103,19 +103,38 @@ def spider_website(website_domain):
             href = tag.get('href')  
             all_hrefs.append(href)
 
-            if href is None:
-                continue
-
-            if not href.startswith('https://'):
+            if href is None or len(href) < 1:
                 continue
 
             if href.endswith(".gif") or href.endswith('.jpeg') or href.endswith('.png') or href.endswith('.jpg') or href.endswith("#"):
                 continue
 
+            if href.endswith('/'):
+                href = href[:-1]
+
             else:
                 # as we do not want to wander out of the site
-                if extract_domain(href) != website_domain:
+                
+                # resolve relative refrernces
+
+                #https://en.wikipedia.org/wiki/Internet
+
+                parsed_href = urlparse(href)
+                parsed_website_url = urlparse(website_url)
+
+                if parsed_href.netloc != parsed_website_url.netloc:
                     continue
+
+                if len(parsed_href.scheme) < 1:
+                    href = urljoin(website_url, href)
+
+                add = False
+                print(href)
+                for website in all_allowed_websites:
+                    if href.startswith(website):
+                        add = True
+                
+                if not add: continue
 
                 cur.execute("""
                     INSERT OR IGNORE INTO Pages 
@@ -144,9 +163,7 @@ def spider_website(website_domain):
         print(colored(f"< len(all_hrefs) = {len(all_hrefs)} >", 'green'))
 
         connection.commit()
-        
-
-
+    
 
 
 
