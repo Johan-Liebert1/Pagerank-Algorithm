@@ -47,12 +47,6 @@ def main():
         
         if website_url.endswith("/"): website_url = website_url[:-1]
 
-        website_url = website_url[:website_url.rfind("/")]
-
-        # parsed_url = urlparse(website_url)
-        # path = parsed_url.path
-        # if path.endswith('/') : path = path[:-1]
-    
         website_domain = website_url
 
         print(colored(f'website_domain : {website_domain}', 'yellow'))
