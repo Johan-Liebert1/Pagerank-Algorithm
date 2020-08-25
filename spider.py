@@ -5,7 +5,6 @@ from urllib.request import urlopen
 from urllib.parse import urlparse, urljoin
 from termcolor import colored
 
-from helpers import extract_domain
 
 # Ignore SSL certificate errors
 ctx = ssl.create_default_context()

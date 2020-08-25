@@ -3,7 +3,6 @@ from urllib.parse import urlparse
 
 from termcolor import colored
 from spider import spider_website
-from helpers import extract_domain
 
 def create_tables():
     cur.executescript('''
