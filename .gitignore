@@ -1,5 +1,5 @@
 *.sqlite
 /test
 test.py
+graph.js
 __pycache__
-view.js

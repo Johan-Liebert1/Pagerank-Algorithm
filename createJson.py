@@ -12,10 +12,10 @@ if len(no) < 1:
 no_of_nodes = int(no)
 
 cur.execute("""
-    SELECT COUNT (from_page_id) AS inbound, old_rank, new_rank, id, url 
+    SELECT COUNT (from_page_id) AS inbound_links, old_rank, new_rank, id, url 
     FROM Pages JOIN Links ON Pages.id = Links.to_page_id
     WHERE html IS NOT NULL AND ERROR IS NULL
-    GROUP BY id ORDER BY id, inbound
+    GROUP BY id ORDER BY id, inbound_links
 """)
 
 file = open('graph.js','w')
