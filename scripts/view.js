@@ -1,4 +1,4 @@
-const width = 640, height = 600
+const width = 800, height = 600
 
 // tick function
 const tick = (e) => {
@@ -25,7 +25,7 @@ const nodes = spiderJson.nodes
 
 let svg = d3.select('#graph').append('svg')
     .attr('style', 'margin: 30px auto')
-    .attr('width', width)
+    .attr('width', '100%')
     .attr('height', height)
 
 // make force layout in d3

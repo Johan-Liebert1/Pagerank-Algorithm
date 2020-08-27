@@ -3,7 +3,7 @@ import sqlite3, sys
 conn = sqlite3.connect('spider_database.sqlite')
 cur = conn.cursor()
 
-no = input("How many nodes to visualize in graph? > ")
+no = input("Enter the number of nodes to visualize in the graph > ")
 
 if len(no) < 1:
     print("ATLEAST TWO NODES REQUIRED")
@@ -18,69 +18,80 @@ cur.execute("""
     GROUP BY id ORDER BY id, inbound_links
 """)
 
-file = open('graph.js','w')
 
-nodes = []
-
-maxrank = None
-minrank = None
+graphNodes = []
+maxRank = None
+minRank = None
 
 for row in cur:
-    nodes.append(row)
+    graphNodes.append(row)
     rank = row[2]
-    
-    if maxrank is None or maxrank < rank: 
-        maxrank = rank
 
-    if minrank is None or minrank > rank: 
-        minrank = rank
+    if maxRank is None or maxRank < rank:
+        maxRank = rank
 
-    if len(nodes) > no_of_nodes: 
+    if minRank is None or minRank > rank:
+        minRank = rank
+
+    if len(graphNodes) == no_of_nodes:
         break
 
-if maxrank == minrank or maxrank is None or minrank is None:
-# if maxrank is None or minrank is None:
-    print("Error - please run pagerank.py to compute page rank")
-    sys.exit()
+if maxRank == minRank or maxRank is None or minRank is None:
+    print("ERROR! Please run pagerank.py to calculate page ranks")
 
-file.write('spiderJson = {"nodes":[\n')
+# row = (noOfInboundLinks, old_rank, new_rank, id, url)
+
+file = open("./scripts/graph.js", "w")
 count = 0
-map1 = {}
+mapping = {} # to map source node to target node
 ranks = {}
 
-for row in nodes:
-    if count > 0: 
-        file.write(',\n')
+file.write('const spiderJson = { \n "nodes" : [\n ')
 
+for row in graphNodes:
+    if count > 0:
+        file.write(",\n")
+    
     rank = row[2]
-    rank = 19 * ( (rank - minrank) / (maxrank - minrank) )
 
-    file.write('{'+'"weight":'+str(row[0])+',"rank":'+str(rank)+',')
-    file.write(' "id":'+str(row[3])+', "url":"'+row[4]+'"}')
+    # normalize ranks
+    rank = 20 * ( (rank - minRank) / (maxRank - minRank) )
 
-    map1[row[3]] = count
+    data = '"weight" : {}, "rank" : {}, "id": {}, "url" : "{}"' \
+            .format(str(row[0]), str(rank), str(row[3]), row[4])
+
+    file.write('{' + data + '}' )
+
+    mapping[row[3]] = count
     ranks[row[3]] = rank
-    count = count + 1
-file.write('],\n')
+
+    count += 1
 
 cur.execute('''SELECT from_page_id, to_page_id FROM Links''')
-file.write('"links":[\n')
+file.write('],\n"links" : [\n')
 
 count = 0
+
 for row in cur :
-    if row[0] not in map1 or row[1] not in map1 : 
+    if row[0] not in mapping or row[1] not in mapping : 
         continue
 
     if count > 0 : 
         file.write(',\n')
 
     rank = ranks[row[0]]
-    srank = 19 * ( (rank - minrank) / (maxrank - minrank) ) 
-    file.write('{"source":'+str(map1[row[0]])+',"target":'+str(map1[row[1]])+',"value":3}')
+
+    data = '"source" : {}, "target" : {}' \
+            .format(str(mapping[row[0]]), str(mapping[row[1]]))
+
+    file.write('{' + data + '}')
+
     count += 1
     
-file.write(']};')
+file.write('\n]\n}')
+
 file.close()
 cur.close()
 
-print("Open view.html in a browser to view the visualization")
+print("Successfully wrote data to graph.js")
+print("Open view.html to view the pagerank graph")

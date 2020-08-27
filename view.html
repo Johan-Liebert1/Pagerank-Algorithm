@@ -18,17 +18,25 @@
             display: flex;
             align-items: center;
         }
+
+        p {
+            text-align: center;
+        }
     </style>
-    
+
   </head>
 
   <body style="font-family: sans-serif;">
+    <p>Hover over any node to see the link.</p>
 
     <div id="graph"></div>
-    
+
+    <p>If you can't see the graph, make sure to enable JavaScript in your browser.</p>
+    <p>Also, make sure you're connected to the Internet</p>
+
     <script src="https://d3js.org/d3.v3.min.js"></script>
-    <script src="colors.js"></script>
-    <script type="text/javascript" src="graph.js"></script>
-    <script type="text/javascript" src="view1.js"></script>
+    <script type="text/javascript" src="scripts/colors.js"></script>
+    <script type="text/javascript" src="scripts/graph.js"></script>
+    <script type="text/javascript" src="scripts/view.js"></script>
   </body>
 </html>
