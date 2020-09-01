@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Force-Directed Layout</title>
+    <title>Graph Visualization</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
     <style>
+        *{
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
         .node {
             stroke: #fff;
             stroke-width: 2px;
@@ -14,7 +20,7 @@
         }
 
         #graph {
-            width: 100vw;
+            width: 75%;
             display: flex;
             align-items: center;
         }
@@ -22,14 +28,42 @@
         p {
             text-align: center;
         }
+
+        .container {
+            width: 95vw;
+            display: flex;
+        }
+
+        #top-ranked p{
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        #top-ranked {
+            margin-top: 50px;
+        }
+
+        #title {
+            font-size: 24px;
+            width: 100%;
+            margin: 10 auto;
+            text-align: center;
+        }
+
+        #title p {font-size: 1rem;}
     </style>
 
   </head>
 
   <body style="font-family: sans-serif;">
-    <p>Hover over any node to see the link.</p>
-
-    <div id="graph"></div>
+    <div id = 'title'>
+        <h3>Graph Visualization of the Page Ranks Calculated</h3>
+        <p>Hover over any node to see the link</p>
+    </div>
+    <div class='container'>
+        <div id="graph"></div>
+        <div id='top-ranked'></div>
+    </div>
 
     <p>If you can't see the graph, make sure to enable JavaScript in your browser.</p>
     <p>Also, make sure you're connected to the Internet</p>

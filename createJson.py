@@ -55,7 +55,7 @@ for row in graphNodes:
     rank = row[2]
 
     # normalize ranks
-    rank = 20 * ( (rank - minRank) / (maxRank - minRank) )
+    rank = 19 * ( (rank - minRank) / (maxRank - minRank) + 0.01 )
 
     data = '"weight" : {}, "rank" : {}, "id": {}, "url" : "{}"' \
             .format(str(row[0]), str(rank), str(row[3]), row[4])

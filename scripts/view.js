@@ -53,3 +53,11 @@ let node = svg.selectAll('.node')
 node.append("title")
     .text(d => d.url);
 
+
+const sortedNodes = nodes.sort((a, b) =>  b.rank - a.rank)
+
+const topRanked = document.getElementById('top-ranked')
+
+sortedNodes.forEach((node, index) => {
+    topRanked.innerHTML += `<p>${index + 1}: ${node.url}, Rank = ${node.rank}</p>`
+});
