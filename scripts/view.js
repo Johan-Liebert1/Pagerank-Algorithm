@@ -59,5 +59,5 @@ const sortedNodes = nodes.sort((a, b) =>  b.rank - a.rank)
 const topRanked = document.getElementById('top-ranked')
 
 sortedNodes.forEach((node, index) => {
-    topRanked.innerHTML += `<p>${index + 1}: ${node.url}, Rank = ${node.rank}</p>`
+    topRanked.innerHTML += `<p>${index + 1}: ${node.url.replace("https://", '')}, Rank = ${node.rank}</p>`
 });

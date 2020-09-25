@@ -43,18 +43,19 @@ for page_id in outbound_links:
 
 
 
-for key, value in outbound_links.items():
-    print(f'({key} -> {value})')
+# ============== for debugging ====================
+# for key, value in outbound_links.items():
+#     print(f'({key} -> {value})')
 
-print('\nINBOUND STARTS')
-for key, value in inbound_links.items():
-    print(f'({key} -> {value})')
+# print('\nINBOUND STARTS')
+# for key, value in inbound_links.items():
+#     print(f'({key} -> {value})')
 
-print('\nPREV_RANKS DICTIONARY')
+# print('\nPREV_RANKS DICTIONARY')
 
-for key, value in prev_ranks.items():
-    print(f'({key} -> {value})')
-
+# for key, value in prev_ranks.items():
+#     print(f'({key} -> {value})')
+# ============== for debugging ====================
 
 '''
 page_rank(current_node) 
@@ -85,12 +86,12 @@ for _ in range(iteration_times):
     prev_ranks = next_ranks
 
 
+# ============== for debugging ====================
+# print('\nNEXT_RANKS DICTIONARY')
 
-print('\nNEXT_RANKS DICTIONARY')
-
-for key, value in next_ranks.items():
-    print(f'({key} -> {value})')
-
+# for key, value in next_ranks.items():
+#     print(f'({key} -> {value})')
+# ============== for debugging ====================
 
 # update ranks in the database
 

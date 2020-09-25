@@ -46,7 +46,7 @@ def spider_website(all_allowed_websites):
             fromId = row[0]
             website_url = row[1]
 
-            print(colored(f'< fromId > {fromId}', 'green'), website_url, end = " ")
+            print(colored(f'Currently Fetching : ', 'green'), website_url, end = " ")
 
         except:
             print("No unretrieved html pages found")
@@ -58,12 +58,12 @@ def spider_website(all_allowed_websites):
             website_html = document.read()
 
             if document.getcode() != 200:
-                print(colored(f"Could not retrieve {website_url}", 'orange'))
+                print(colored(f"\nCould not retrieve {website_url}", 'orange'))
                 cur.execute("UPDATE Pages SET error = ? WHERE url = ?", (document.getcode(), website_url))
                 connection.commit()
 
             if document.info().get_content_type() != 'text/html':
-                print(colored("Ignoring non HTML pages", 'yellow'))
+                print(colored(f"\nIgnoring non HTML page : {website_url}", 'yellow'))
                 cur.execute("DELETE FROM Pages WHERE url = ?", (website_url,))
                 connection.commit()
                 continue
@@ -134,7 +134,6 @@ def spider_website(all_allowed_websites):
                     href = f"{parsed_website_url.scheme}://{parsed_website_url.netloc}{parsed_href.path}"
 
                 add = False
-                print(href)
                 all_hrefs.append(href)
                 for website in all_allowed_websites:
                     if href.startswith(website):
