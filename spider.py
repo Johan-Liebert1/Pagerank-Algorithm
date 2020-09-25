@@ -16,7 +16,6 @@ cur = connection.cursor()
 
 
 #TODO
-
 # checking if we're already in progress
 # check if everything has been found 
 
@@ -76,7 +75,7 @@ def spider_website(all_allowed_websites):
             all_anchor_tags = website_soup('a')
 
         except KeyboardInterrupt:
-            print(colored("\nProgram Interrupted by User..."))
+            print(colored("\nProgram Interrupted by User...", 'yellow'))
             break
 
         except:
@@ -89,6 +88,8 @@ def spider_website(all_allowed_websites):
             continue
 
 
+        # at this point the page was successfully retrieved and all error checks are done
+
         cur.execute("""
             UPDATE Pages 
             SET html = ?
@@ -100,7 +101,6 @@ def spider_website(all_allowed_websites):
         
         for tag in all_anchor_tags:
             href = tag.get('href')  
-            all_hrefs.append(href)
 
             if href is None or len(href) < 1:
                 continue
@@ -110,6 +110,7 @@ def spider_website(all_allowed_websites):
 
             if href.endswith('/'):
                 href = href[:-1]
+
 
             else:
                 # as we do not want to wander out of the site
@@ -121,14 +122,20 @@ def spider_website(all_allowed_websites):
                 parsed_href = urlparse(href)
                 parsed_website_url = urlparse(website_url)
 
-                if parsed_href.netloc != parsed_website_url.netloc:
+                if (parsed_href.netloc != '') and (parsed_href.netloc != parsed_website_url.netloc):
+                    # link wanders out of current website
+                    
                     continue
 
                 if len(parsed_href.scheme) < 1:
-                    href = urljoin(website_url, href)
+                    # it's  a relative link
+                    # make url out of relative link
+
+                    href = f"{parsed_website_url.scheme}://{parsed_website_url.netloc}{parsed_href.path}"
 
                 add = False
                 print(href)
+                all_hrefs.append(href)
                 for website in all_allowed_websites:
                     if href.startswith(website):
                         add = True

@@ -3,3 +3,5 @@
 test.py
 graph.js
 __pycache__
+*.ipynb
+.ipynb_checkpoints/

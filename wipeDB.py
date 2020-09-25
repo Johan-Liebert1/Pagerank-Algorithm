@@ -14,11 +14,11 @@ if cont.lower() == 'y':
         DROP TABLE IF EXISTS Links;
     """)
 
-conn.commit()
+    conn.commit()
 
-print(colored("ALL TABLES DELETED", 'green'))
+    print(colored("ALL TABLES DELETED", 'green'))
 
-cur.close()
+    cur.close()
 
 else:
     sys.exit()
